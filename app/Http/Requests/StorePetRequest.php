@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StorePetRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class StorePetRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +23,10 @@ class StorePetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'pet_name' => 'required|string|max:255',
+            'pat_category_id' => 'required',Rule::exists('pet_categories','id'),
         ];
     }
 }
