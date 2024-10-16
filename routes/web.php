@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PetController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,3 +19,5 @@ Route::get('/', function () {
 });
 
 Route::resource('pet',\App\Http\Controllers\PetController::class)->only('create','store');
+
+Route::get('email-confirmation/{token}',[PetController::class,'confirmation'])->name('confirmation');

@@ -17,6 +17,9 @@ return new class extends Migration
             $table->string('email',255);
             $table->foreignId('pet_category_id')->references('id')->on('pet_categories');
             $table->string('pet_name',255);
+            $table->unsignedBigInteger('sendsay_id')->nullable()->default(null);
+            $table->string('confirmation_token',255)->nullable()->default(null);
+            $table->boolean('confirm')->default(false);
             $table->timestamps();
         });
     }

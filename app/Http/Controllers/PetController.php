@@ -37,35 +37,14 @@ class PetController extends Controller
         return $petService->store($request);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Pet $pet)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Pet $pet)
-    {
-        //
-    }
+    public function confirmation(string $token,PetService $service){
+        $result = $service->confirmation($token);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdatePetRequest $request, Pet $pet)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Pet $pet)
-    {
-        //
+        if($result){
+            return view('pet.success');
+        }else{
+            return view('pet.error');
+        }
     }
 }
