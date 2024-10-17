@@ -17,10 +17,11 @@ class ConfirmationSubscribeJob implements ShouldQueue
     private string $email;
 
     private string $token;
+
     /**
      * Create a new job instance.
      */
-    public function __construct(string $email,string $token)
+    public function __construct(string $email, string $token)
     {
         $this->email = $email;
 

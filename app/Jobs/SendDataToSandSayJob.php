@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Services\SandayService\SandsayService;
+use App\Services\SandayService\SendsayService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -13,23 +13,30 @@ class SendDataToSandSayJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    private $email = null;
+    private string|null $email = null;
 
-    private $id = null;
+    private int|null $id = null;
+
+    private string|null $ip = null;
 
     /**
      * Create a new job instance.
      */
-    public function __construct($email,$id)
+    public function __construct($email, $id, $ip)
     {
         $this->email = $email;
+
+        $this->ip = $ip;
+
+        $this->id = $id;
     }
 
     /**
      * Execute the job.
+     * @throws \Exception
      */
-    public function handle(SandsayService $service): void
+    public function handle(SendsayService $service): void
     {
-        $service->setMember($this->email,$this->id);
+        $service->setMember($this->email, $this->id, $this->ip);
     }
 }

@@ -26,7 +26,8 @@ class StorePetRequest extends FormRequest
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'pet_name' => 'required|string|max:255',
-            'pat_category_id' => 'required',Rule::exists('pet_categories','id'),
+            'pat_category_id' => 'required',
+            Rule::exists('pet_categories', 'id'),
         ];
     }
 }

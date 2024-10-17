@@ -7,12 +7,10 @@ use App\Services\HttpRequestClass;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
-class SandsayService extends HttpRequestClass
+class SendsayService extends HttpRequestClass
 {
 
     public $login = '';
-
-   // public $sublogin = '';
 
     public $password = '';
 
@@ -23,8 +21,6 @@ class SandsayService extends HttpRequestClass
     {
         $this->login = config('subscribe.sendsay.login');
 
-      //  $this->sublogin = config('subscribe.sendsay.sublogin');
-
         $this->password = config('subscribe.sendsay.password');
 
         $this->url = config('subscribe.sendsay.api_url');
@@ -33,28 +29,29 @@ class SandsayService extends HttpRequestClass
     }
 
 
-    public function setMember($email,$id = null,$ip = null){
-
-        $url = config('subscribe.sendsay.api_url').config('subscribe.sendsay.account');
+    public function setMember($email, $id = null, $ip = null): bool
+    {
+        $url = config('subscribe.sendsay.api_url') . config('subscribe.sendsay.account');
 
         $data = [
             'action' => 'member.set',
-            "addr_type"=> "email",
+            "addr_type" => "email",
             'email' => $email,
             'newbie.confirm' => 1,
             'session' => $this->login(),
-            'source' => $ip ?:"127.0.0.1"
+            'source' => $ip ?: "127.0.0.1"
         ];
 
         $response = $this->post($url, $data);
 
-        if(!isset($response['member']['id'])){
+        if (!isset($response['member']['id'])) {
+            Log::error('error add member: '.print_r($response,true));
             throw new \Exception('Error add member');
         }
 
-        $pet = Pet::query()->where('id',$id)->first();
+        $pet = Pet::query()->where('id', $id)->first();
 
-        if($pet){
+        if ($pet) {
             $pet->sendsay_id = intval($response['member']['id']);
             $pet->save();
         }
@@ -68,10 +65,9 @@ class SandsayService extends HttpRequestClass
      */
     public function login()
     {
+        $session = Cache::get('sendsay_session');
 
-        $session = Cache::get('sansay_session');
-
-        if($session){
+        if ($session) {
             return $session;
         }
 
@@ -81,17 +77,17 @@ class SandsayService extends HttpRequestClass
             'passwd' => $this->password
         ];
 
-        $url = config('subscribe.sendsay.api_url').config('subscribe.sendsay.account');
+        $url = config('subscribe.sendsay.api_url') . config('subscribe.sendsay.account');
 
         $response = $this->post($url, $data);
 
-        if(!isset($response['session'])){
+        if (!isset($response['session'])) {
             throw new \Exception('Login exception');
         }
 
         $session = $response['session'];
 
-        Cache::set('sansay_session',$session,5);
+        Cache::set('sendsay_session', $session,);
 
         return $session;
     }

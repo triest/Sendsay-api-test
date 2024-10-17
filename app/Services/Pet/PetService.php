@@ -7,18 +7,18 @@ use App\Jobs\ConfirmationSubscribeJob;
 use App\Jobs\SendDataToSandSayJob;
 use App\Models\Pet\Pet;
 use App\Models\Pet\PetCategory;
-use App\Services\SandayService\SandsayService;
+use App\Services\SandayService\SendsayService;
 use Illuminate\Support\Str;
 
 
 class PetService
 {
-    public SandsayService $sandsayService;
+    public SendsayService $sandsayService;
 
 
-    public function store(StorePetRequest $inputDate)
+    public function store(StorePetRequest $inputDateRequest)
     {
-        $inputDate = $inputDate->validated();
+        $inputDate = $inputDateRequest->validated();
 
         $petCategory = PetCategory::query()->where('id', $inputDate['pat_category_id'])->first();
 
@@ -37,26 +37,27 @@ class PetService
 
         $pet->save();
 
-        SendDataToSandSayJob::dispatch($pet->email, id: $pet->id)->delay(1);
+        SendDataToSandSayJob::dispatch($pet->email, id: $pet->id, ip: $inputDateRequest->ip())->delay(1);
 
         $this->sendComformationEmail($pet);
+
+        return $pet;
     }
 
     public function sendComformationEmail(Pet $pet): void
     {
-
-        $pet->confirmation_token = Str::random(40).'_'.$pet->id;
+        $pet->confirmation_token = Str::random(40) . '_' . $pet->id;
 
         $pet->save();
 
-        ConfirmationSubscribeJob::dispatch($pet->email,$pet->confirmation_token)->delay(1);
+        ConfirmationSubscribeJob::dispatch($pet->email, $pet->confirmation_token)->delay(1);
     }
 
     public function confirmation(string $token): bool
     {
-        $pet = Pet::query()->where('confirmation_token',$token)->first();
+        $pet = Pet::query()->where('confirmation_token', $token)->first();
 
-        if(!$pet){
+        if (!$pet) {
             return false;
         }
 

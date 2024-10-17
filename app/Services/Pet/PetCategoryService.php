@@ -8,7 +8,7 @@ class PetCategoryService
 {
     public function index()
     {
-        $petCategory = PetCategory::query()->orderBy('name')->get();
+        $petCategory = PetCategory::query()->orderBy('id')->get();
         return $petCategory;
     }
 }

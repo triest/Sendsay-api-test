@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePetRequest;
-use App\Http\Requests\UpdatePetRequest;
-use App\Models\Pet\Pet;
 use App\Services\Pet\PetCategoryService;
 use App\Services\Pet\PetService;
 
@@ -16,7 +14,7 @@ class PetController extends Controller
      */
     public function index()
     {
-        //
+        return redirect()->route('pet.index');
     }
 
     /**
@@ -32,18 +30,23 @@ class PetController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StorePetRequest $request,PetService $petService)
+    public function store(StorePetRequest $request, PetService $petService)
     {
-        return $petService->store($request);
+        if($petService->store($request)){
+            return view('pet.create-success');
+        }
+
+        return view('pet.create-error'); ;
     }
 
 
-    public function confirmation(string $token,PetService $service){
+    public function confirmation(string $token, PetService $service)
+    {
         $result = $service->confirmation($token);
 
-        if($result){
+        if ($result) {
             return view('pet.success');
-        }else{
+        } else {
             return view('pet.error');
         }
     }

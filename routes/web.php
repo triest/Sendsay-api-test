@@ -14,10 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [\App\Http\Controllers\HomeController::class,'index']);
 
 Route::resource('pet',\App\Http\Controllers\PetController::class)->only('create','store');
 
 Route::get('email-confirmation/{token}',[PetController::class,'confirmation'])->name('confirmation');
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

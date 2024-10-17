@@ -39,12 +39,12 @@ class HttpRequestClass
                 [RequestOptions::JSON => $data]
             )->then(
                 function (ResponseInterface $response) {
-                    if($response->getStatusCode()!=200){
+                    if ($response->getStatusCode() != 200) {
                         throw new \Exception('Login error');
                     }
                     $temp = $response->getBody()->getContents();
 
-                    $response = json_decode($temp,true);
+                    $response = json_decode($temp, true);
 
                     return $response;
                 },
@@ -53,8 +53,7 @@ class HttpRequestClass
 
                     //$response->data = $e->getMessage();
                     throw new \Exception($e->getMessage());
-
-                   //return $response;
+                    //return $response;
                 }
             );
         self::schedulePromise([$promise, 'wait'], false);

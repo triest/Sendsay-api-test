@@ -9,9 +9,10 @@ class Pet extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name','email'];
+    protected $fillable = ['name', 'email'];
 
-    public function petCategory(){
+    public function petCategory()
+    {
         return $this->belongsTo(PetCategory::class);
     }
 }

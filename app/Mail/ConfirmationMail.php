@@ -12,9 +12,9 @@ class ConfirmationMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    private $token = null;
+    private string|null $token = null;
 
-    public $url = null;
+    public string|null $url = null;
 
     /**
      * Create a new message instance.
@@ -24,7 +24,6 @@ class ConfirmationMail extends Mailable
         $this->token = $token;
 
         $this->url = route('confirmation', ['token' => $token]);
-
     }
 
     /**
