@@ -45,6 +45,7 @@ class SendsayService extends HttpRequestClass
         $response = $this->post($url, $data);
 
         if (!isset($response['member']['id'])) {
+            Log::debug('request'. print_r($data,true));
             Log::error('error add member: '.print_r($response,true));
             throw new \Exception('Error add member');
         }
