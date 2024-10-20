@@ -2,6 +2,7 @@
 
 namespace App\Services\Pet;
 
+use App\DTO\PetDto;
 use App\Http\Requests\StorePetRequest;
 use App\Jobs\ConfirmationSubscribeJob;
 use App\Jobs\SendDataToSandSayJob;
@@ -16,28 +17,28 @@ class PetService
     public SendsayService $sandsayService;
 
 
-    public function store(StorePetRequest $inputDateRequest)
+    /**
+     * @throws \Exception
+     */
+    public function store(PetDto $inputDate,string $ip = null)
     {
-        $inputDate = $inputDateRequest->validated();
-
-        $petCategory = PetCategory::query()->where('id', $inputDate['pat_category_id'])->first();
+        $petCategory = PetCategory::query()->where('id', $inputDate->pat_category_id)->first();
 
         if (!$petCategory) {
-            throw \Exception('pet category not found');
-        }
-
+            throw new \Exception('pet category not found');
+        };
         $pet = new Pet();
 
-        $pet->name = $inputDate['name'];
-        $pet->pet_name = $inputDate['pet_name'];
+        $pet->name = $inputDate->name;
+        $pet->pet_name = $inputDate->pet_name;
 
         $pet->petCategory()->associate($petCategory);
 
-        $pet->email = $inputDate['email'];
+        $pet->email = $inputDate->email;
 
         $pet->save();
 
-        SendDataToSandSayJob::dispatch($pet->email, id: $pet->id, ip: $inputDateRequest->ip())->delay(1);
+        SendDataToSandSayJob::dispatch($pet->email, id: $pet->id, ip: $ip)->delay(1);
 
         $this->sendComformationEmail($pet);
 
