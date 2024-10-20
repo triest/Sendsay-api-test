@@ -3,7 +3,6 @@
 namespace App\Services\Pet;
 
 use App\DTO\PetDto;
-use App\Http\Requests\StorePetRequest;
 use App\Jobs\ConfirmationSubscribeJob;
 use App\Jobs\SendDataToSandSayJob;
 use App\Models\Pet\Pet;
@@ -14,19 +13,17 @@ use Illuminate\Support\Str;
 
 class PetService
 {
-    public SendsayService $sandsayService;
-
-
     /**
      * @throws \Exception
      */
-    public function store(PetDto $inputDate,string $ip = null)
+    public function store(PetDto $inputDate, string $ip = null): Pet
     {
         $petCategory = PetCategory::query()->where('id', $inputDate->pat_category_id)->first();
 
         if (!$petCategory) {
             throw new \Exception('pet category not found');
         };
+
         $pet = new Pet();
 
         $pet->name = $inputDate->name;
@@ -40,12 +37,12 @@ class PetService
 
         SendDataToSandSayJob::dispatch($pet->email, id: $pet->id, ip: $ip)->delay(1);
 
-        $this->sendComformationEmail($pet);
+        $this->sendConfirmationEmail($pet);
 
         return $pet;
     }
 
-    public function sendComformationEmail(Pet $pet): void
+    public function sendConfirmationEmail(Pet $pet): void
     {
         $pet->confirmation_token = Str::random(40) . '_' . $pet->id;
 

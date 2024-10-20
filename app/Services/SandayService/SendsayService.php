@@ -29,7 +29,7 @@ class SendsayService extends HttpRequestClass
     }
 
 
-    public function setMember($email, $id = null, $ip = null): bool
+    public function setMember($email, $id, $ip = null): bool
     {
         $url = config('subscribe.sendsay.api_url') . config('subscribe.sendsay.account');
 
@@ -45,8 +45,9 @@ class SendsayService extends HttpRequestClass
         $response = $this->post($url, $data);
 
         if (!isset($response['member']['id'])) {
-            Log::debug('request'. print_r($data,true));
-            Log::error('error add member: '.print_r($response,true));
+            Log::debug('request' . print_r($data, true));
+            Log::error('error add member: ' . print_r($response, true));
+            Cache::forget('sendsay_session');
             throw new \Exception('Error add member');
         }
 
@@ -66,7 +67,7 @@ class SendsayService extends HttpRequestClass
      */
     public function login()
     {
-        $session = Cache::get('sendsay_session');
+        $session = Cache::get('sendsay_session', 10);
 
         if ($session) {
             return $session;
@@ -88,7 +89,7 @@ class SendsayService extends HttpRequestClass
 
         $session = $response['session'];
 
-        Cache::set('sendsay_session', $session,);
+        Cache::set('sendsay_session', $session, 10);
 
         return $session;
     }

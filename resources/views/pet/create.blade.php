@@ -19,11 +19,6 @@
                    placeholder="Введите имя питомца">
         </div>
         <div class="form-group">
-            <label for="exampleInputEmail1">Имя питомца</label>
-            <input type="name" class="form-control" id="test" name="test" aria-describedby="petHelp"
-                   placeholder="Введите имя питомца">
-        </div>
-        <div class="form-group">
             <label for="exampleInputEmail1">Категория питомца</label>
             <select name="pat_category_id" id="pat_category_id">
                 @foreach($categories as $category)

@@ -49,11 +49,7 @@ class HttpRequestClass
                     return $response;
                 },
                 function (RequestException $e) {
-                    $response = [];
-
-                    //$response->data = $e->getMessage();
                     throw new \Exception($e->getMessage());
-                    //return $response;
                 }
             );
         self::schedulePromise([$promise, 'wait'], false);

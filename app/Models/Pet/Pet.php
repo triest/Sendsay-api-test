@@ -9,6 +9,15 @@ class Pet extends Model
 {
     use HasFactory;
 
+    public static ?string $confirmation_token;
+
+    public static ?string $email;
+
+    public static ?string $name;
+
+    public static ?string $pet_name;
+
+
     protected $fillable = ['name', 'email'];
 
     public function petCategory()

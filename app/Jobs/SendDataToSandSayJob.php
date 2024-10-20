@@ -19,6 +19,10 @@ class SendDataToSandSayJob implements ShouldQueue
 
     private string|null $ip = null;
 
+    public $tries = 3;
+
+    public $timeout = 120;
+
     /**
      * Create a new job instance.
      */
